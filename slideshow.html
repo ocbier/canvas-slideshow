@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+
+<html>
+	<head>
+      <meta charset = "utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0">   <!-- Make sure page scales correctly -->
+      <title>Part 3: Slideshow</title>
+	  <script type = "text/javascript" src = "Slideshow.js"></script>
+	  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif"/>
+	  <link rel = "stylesheet" type = "text/css" href = "../shared/style.css"/>
+	</head>
+	  
+	<body id = "slideshow-body">
+		<div id = "slideshow">
+			<figure>
+				<!--Canvas used to display slide show images, with escape text if canvas is not supported.-->
+				<canvas id = "image-canvas">
+				This browser does not support canvas. Slideshow cannot be displayed.
+				</canvas>
+				<!--Image captions  for slideshow, change dynamically to show correct caption for each image.-->
+				<figcaption id = "imageCaption">|</figcaption>
+			</figure>	
+			
+			<!--Buttons and effects selection element to control slide show Set class to flex to display as flex container.-->
+			<div id = "controls" class = "flex">
+				<button type = "button" id = "play-toggle" name = "Pause" value = "Pause">pause</button>
+				<button type = "button" id = "direction-toggle" name = "direction-toggle" value = "Reverse">reverse</button>
+				<button type = "button" id = "random-toggle" name = "random-toggle" value = "Randomize">randomize</button>
+				<button type = "button" id = "previous" name = "previous" value = "Previous">previous</button>
+				<button type = "button" id = "next" name = "next" value = "Next">next</button>
+				
+				<!--Drop-down menu for selecting transition effects. Note that autocomplete is set to off to prevent
+				    selection from persisting on refresh -->
+				<div id = "effects-div">
+					<label>Effect: </label> 
+					<select id = "effects-selector" name = "effects-selector" autocomplete = "off">
+						
+						<option value = "None" selected = "selected">None</option>
+						<option value = "fade">Fade</option>
+						<option value = "slide-vertically">Slide Vertically</option>
+						<option value = "slide-across">Slide Across</option>
+					</select>
+				</div>
+				
+			</div>
+		</div>
+		
+	</body>
+</html>
