@@ -1,6 +1,6 @@
 # canvas-slideshow
 
-**A canvas slideshow supporting various features.**
+**A progressive web application (PWA) supporting various slideshow features.**
 
 
 **************************************************************************************************************
