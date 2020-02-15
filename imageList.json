@@ -1,11 +1,61 @@
-[ {"path": "images/test.jpg", 
-   "Test " }, 
+[ {"path": "images/pic (1).jpg", 
+   "caption": "1. Somewhere in the Fraser Valley, BC: Secret Fishing Spot" }, 
    
-  {"path": "images/test2.jpg", 
-   "Another test" },
+  {"path": "images/pic (2).jpg", 
+   "caption": "2. Upper Fraser Valley, BC: Cows Grazing Near Water Source" },
 
-   {"path": "images/test3.jpg", 
-   "Really just another test." },
+   {"path": "images/pic (3).jpg", 
+   "caption": "3. Douglas Lake Ranch, BC: Outstretched Grassland Near Douglas Lake " },
    
-        
+   {"path": "images/pic (4).jpg", 
+   "caption": "4. Douglas Lake Ranch, BC: Outstretched Grassland Near Douglas Lake 2"},
+   
+   {"path": "images/pic (5).jpg", 
+   "caption": "5. Chilliwack, BC: Sunrise on Highway 1 East Towards Hope" },
+   
+   {"path": "images/pic (6).jpg", 
+   "caption": "6. Fraser River tributary, upper area" },
+   
+   {"path": "images/pic (7).jpg", 
+   "caption": "7. Douglas Lake Ranch, BC: Harry's Dam in Mid-day"},
+   
+   {"path": "images/pic (8).jpg", 
+   "caption": "8. Douglas Lake Ranch during wind storm, with polarizer" },
+   
+   {"path": "images/pic (9).jpg", 
+   "caption": "9. Dark clouds over Salmon Lake, BC" },
+   
+   {"path": "images/pic (10).jpg", 
+   "caption": "10. Douglas Lake Ranch, BC: Clouds Over Salmon Lake Camp After Wind Storm" },
+   
+   {"path": "images/pic (11).jpg", 
+   "caption": "11. Simalkameen river near Hope, BC" },
+   
+   {"path": "images/pic (12).jpg", 
+   "caption": "12. Douglas Lake Ranch, BC: Late Afternoon on Salmon Lake" },
+   
+   {"path": "images/pic (13).jpg", 
+   "caption": "13. Douglas Lake Ranch, BC: Early Evening on Salmon Lake" },
+   
+   {"path": "images/pic (14).jpg", 
+   "caption": "14. Fraser Valley, BC: Rolling Fog Over Moutain Near Fraser River" },
+   
+   {"path": "images/pic (15).jpg", 
+   "caption": "15. Fraser Valley, BC: Rolling Fog Over Moutain Near Fraser River 2" },
+   
+   { "path": "images/pic (16).jpg",
+     "caption": "16. Douglas Lake Ranch, BC: Mid-day at Salmon Lake" },
+	 
+   {"path": "images/pic (17).jpg", 
+   "caption": "17. Clouds at Douglas Lake Ranch after thunderstorm." },
+	
+   {"path": "images/pic (18).jpg", 
+   "caption": "18. Salmon lake during windstorm, with polarizer" },
+   
+   {"path": "images/pic (19).jpg", 
+   "caption": "19. Douglas Lake Ranch, BC: Late Afternoon on Salmon Lake After Thunderstorm" },
+   
+   {"path": "images/pic (20).jpg", 
+   "caption": "20. Douglas Lake Ranch, BC: Mid afternoon during strong wind, with polarizer." }
+     
 ]

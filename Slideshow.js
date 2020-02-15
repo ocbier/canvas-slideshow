@@ -30,7 +30,7 @@
 	var images = new Array();                     //Array holding references to Image objects.
 		
 	var globalImageWidth = defaultImageWidth;     //Actual value for image width. Set to default initially
-	var globalImageHeight = defaultImageWidth;    //Actual value to use for image height. Set to default initially.
+	var globalImageHeight = defaultImageHeight;    //Actual value to use for image height. Set to default initially.
 	var interval = 0;                            //ID returned by setInterval() when a function is assigned.
 	var imageCounter = 0;   					//current image index in array "images".
 	
@@ -47,7 +47,7 @@
 		
 			
 		
-	/* ctor for object representing a . Has attributes for DOM element of button and state of the button
+	/* ctor for object representing a control button. Has attributes for DOM element of button and state of the button
 	Also allows an optional callback to be assigned to the button.*/
 	function ControlElement(elem, enabled, callback, eventName)
 	{
@@ -159,6 +159,7 @@
 		this.nextButton = controlsContainer.nextButton;
 		this.previousButton = controlsContainer.previousButton;
 		this.effectSelector = controlsContainer.effectSelector;
+		this.fullScreenButton = controlsContainer.fullScreenButton;
 		
 		/*Toggles the state of the play button. Signals change in appearance accordingly from
 		  changing value attribute. Note that ControlElement object's toggle() method will also set 
@@ -230,6 +231,13 @@
 			return random;
 		}
 		
+
+		this.toggleFullScreen = function()
+		{
+			this.fullScreenButton.toggle();
+		}
+
+
 		/*Return true if play button is in true ("playing") state, false otherwise */
 		this.isPlaying = function()
 		{
@@ -247,6 +255,12 @@
 		{
 			return this.directionButton.getState();
 		}
+
+		this.isFullScreen = function()
+		{
+			return this.fullScreenButton.getState();
+		}
+
 	}
 	
 	
@@ -260,8 +274,12 @@
 		this.nextButton;
 		this.previousButton;
 		this.effectSelector;
+		this.fullScreenButton;
 	}                                     
 	
+
+
+
 	/* Creates an XMLHttpRequest object to retrieve JSON data from a particular location. Assigns 
 	   appropriate event listner for the the readstatechange event on this object and sets
 	   calback. 
@@ -338,6 +356,7 @@
 					
 				imageCounter = -1;           //First set image counter to position before first image in array imageData.
 				setupControls(true);       //Assign callbacks to buttons. Appropriate graphics context specified in arg context.
+
 				drawNextSlide();           //Draw first slide immediately.
 				 
 				  /*Call togglePlay() to change state of play button, and call
@@ -475,7 +494,7 @@
 		meaning any currently selected effects will be applied.*/
 	function drawNextSlide()
 	{ 
-		nextCounter = imageCounter + 1;                                              //First increment.
+		nextCounter = imageCounter + 1;                             //First increment.
 		if (nextCounter >= images.length)                           //Reset position if last element in array is exceeded.
 			nextCounter = 0;
 				
@@ -524,7 +543,10 @@
 		
 		try{
 				 
-		     context.clearRect(0, 0, width, height);                        //Clear the canvas image area before drawing.
+			 context.clearRect(0, 0, width, height);                        //Clear the canvas image area before drawing.
+			 
+			 console.log("Drawing " + images[imageCounter].src);
+
 			 context.drawImage(images[imageCounter], 0, 0, width, height);
 			 captionElement.innerHTML = images[imageCounter].alt;          //Draw the caption in captionElement in DOM. 
 		 
@@ -541,22 +563,38 @@
 	
 	/*Dynamically resizes canvas and images while maintaining aspect ratio. Uses computed style width value (if specified)
 	  to determine correct width and height. Sets context to graphics context for this canvas.*/
-	function resizeCanvas()
+	function resizeCanvas(isFullscreen = false)
 	{
 		
 		/*Use the computed style to set the actual width  (x coordinate range)
 		  for canvas. This allows dynamic styling with css. */
-		var computedWidth = window.getComputedStyle(canvas, null)["width"];
-				
+		let computedWidth = window.getComputedStyle(canvas, null)["width"];
+		let computedHeight = window.getComputedStyle(canvas, null)["height"];
+		
+		context = canvas.getContext("2d");                               //Get the new graphics context for appropriate coordinate space.
+
+
+		/*Full screen case. Draw to entire screen */
+		if (computedWidth && computedHeight && isFullscreen === true)
+		{
+			globalImageWidth = window.innerWidth;
+			globalImageHeight = window.innerHeight;
+
+			console.log(globalImageWidth);
+		console.log(globalImageHeight);
+		}
+
+		
+
 		//If style has been specified, change width and height of canvas and images from default.
-		if (computedWidth)
+		else if (computedWidth)
 		{
 			globalImageWidth = canvas.width = parseInt(computedWidth);       //Set width of canvas and images to computed width.  
 			//Set height of canvas and images, adjusting for aspect ratio by multiplying globalImageWidth by inverse of aspectRatio.
 			globalImageHeight = canvas.height = Math.pow(aspectRatio, -1) * globalImageWidth;    
 		}
 				
-		context = canvas.getContext("2d");                               //Get the new graphics context for appropriate coordinate space.
+		
 		context.clearRect(0, 0, globalImageWidth, globalImageHeight);    //Clear the canvas after resize to prevent image corruption.
 		
 	}	
@@ -567,13 +605,15 @@
 	function setupControls()
 	{
 		/*Get the DOM button elements */
-		var playElem = document.getElementById("play-toggle");             //DOM input button for playing or pausing.
-		var directionElem = document.getElementById("direction-toggle");   //DOM input button for changing direction.
-		var randomElem = document.getElementById("random-toggle");        //DOM input button for randomization.
-		var nextElem = document.getElementById("next");                  //DOM input button for next slide.
-		var previousElem = document.getElementById("previous");          //DOM input button for previous slide.
-		var selectorElem = document.getElementById("effects-selector");  //DOM input button selector for different effects.
-		var captionElem = document.getElementById("imageCaption");      //DOM input button image caption.
+		let playElem = document.getElementById("play-toggle");             //DOM input button for playing or pausing.
+		let directionElem = document.getElementById("direction-toggle");   //DOM input button for changing direction.
+		let randomElem = document.getElementById("random-toggle");        //DOM input button for randomization.
+		let nextElem = document.getElementById("next");                  //DOM input button for next slide.
+		let previousElem = document.getElementById("previous");          //DOM input button for previous slide.
+		let selectorElem = document.getElementById("effects-selector");  //DOM input button selector for different effects.
+		let captionElem = document.getElementById("imageCaption");      //DOM input button image caption.
+		let fullScreenElem = document.getElementById("full-screen");
+
 		
 		/*Create ControlElement elements and place them in ControlsContainer object. Specify 
 		property for DOM element of each button and its state as args to 
@@ -627,7 +667,16 @@
 				value: new ControlElement(previousElem, true, function() {
 					previousCallback( captionElem);
 				}, "click")                                         
-			},               
+			},
+			
+			
+			fullScreenButton : {
+				configurable: false,
+				writable: true,
+				enumerable: true,
+				value: new ControlElement(fullScreenElem, true, fullScreenCallback, "click")
+			},
+
 			/*The selector element for effects. Pass effectCallback() as callback for change event.
 			  Callback takes arguments for the graphics context and the current option selected (value attribute)
 			  of associated select element. Sets the appropriate drawing function to be used
@@ -642,7 +691,7 @@
 			}               
 		});
 		
-		/*Set up controls for slideshow with the 3 buttons in DOM for play, direction, and random toggle actions
+		/*Set up controls for slideshow with the buttons in DOM for play, direction, and random toggle actions
 		  Also pass value indicating if slideshow is playing initally*/
 		controls = new ControlsManager(container);	
 	}
@@ -858,8 +907,7 @@
 		
 	}
 		
-	
-	
+		
 	
 	/*Callback for playing or pausing slideshow */
 	function playCallback( captionElem)
@@ -934,6 +982,41 @@
 			drawPreviousSlide();
 		}
 	}
+
+
+	function fullScreenCallback()
+	{
+		var browserFullScreen = null;
+
+		controls.toggleFullScreen();
+
+		/*Go full screen */
+		if (controls.isFullScreen())
+		{
+			/*Determine which function the browser supports */
+			browserFullScreen = canvas.requestFullscreen || 
+			canvas.webkitRequestFullScreen || canvas.mozRequestFullScreen || canvas.msRequestFullscreen || null;
+			
+			if (browserFullScreen !== null)
+			{
+				browserFullScreen.call(canvas);
+				resizeCanvas(true);
+				
+				resumeSlideShow();
+				
+			}
+		
+		}
+
+		controls.toggleFullScreen();
+
+		
+
+
+	}
+
+
+
 	
 	/*Callback for the effects select element. Assigns appropriate function using setInterval
 	  in order to achieve effect. If the "None" option is selected, effects are cleared by

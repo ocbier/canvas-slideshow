@@ -16,7 +16,7 @@
 			<figure>
 				<!--Canvas used to display slide show images, with escape text if canvas is not supported.-->
 				<canvas id = "image-canvas">
-				This browser does not support canvas. Slideshow cannot be displayed.
+				This browser does not support Canvas. Slideshow cannot be displayed.
 				</canvas>
 				<!--Image captions  for slideshow, change dynamically to show correct caption for each image.-->
 				<figcaption id = "imageCaption">|</figcaption>
@@ -25,10 +25,11 @@
 			<!--Buttons and effects selection element to control slide show Set class to flex to display as flex container.-->
 			<div id = "controls" class = "flex">
 				<button type = "button" id = "play-toggle" name = "Pause" value = "Pause">pause</button>
-				<button type = "button" id = "direction-toggle" name = "direction-toggle" value = "Reverse">reverse</button>
-				<button type = "button" id = "random-toggle" name = "random-toggle" value = "Randomize">randomize</button>
 				<button type = "button" id = "previous" name = "previous" value = "Previous">previous</button>
 				<button type = "button" id = "next" name = "next" value = "Next">next</button>
+				<button type = "button" id = "direction-toggle" name = "direction-toggle" value = "Reverse">reverse</button>
+				<button type = "button" id = "random-toggle" name = "random-toggle" value = "Randomize">randomize</button>
+				<button type = "button" id = "full-screen" name = "full-screen" value = "Full Screen">full screen</button>
 				
 				<!--Drop-down menu for selecting transition effects. Note that autocomplete is set to off to prevent
 				    selection from persisting on refresh -->
