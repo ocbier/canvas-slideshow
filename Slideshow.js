@@ -17,27 +17,28 @@
     /*****Slideshow settings *******/
 	const defaultImageWidth = 640;
 	const defaultImageHeight = 480;
-	const playSpeed = 8000;                        //Slide show play speed in ms.
+	const playSpeed = 8000;                          //Slide show play speed in ms.
 	const aspectRatio = 16/9;                        //Aspect ratio for images.
 	const animationSpeed = 33;                       //Redraw rate for animations.
 	const fadeStep = 0.008;	                         //Amount to fade after each redraw.
-	const loadTimeout = 60000;                       //Timeout for image loading set to 60000ms or 1 minute.
+	const loadTimeout = 90000;                       //Timeout for image loading set to 90000ms or 1m 30s.
 
 	
-	const imageLocationsResource = "imageList.json";//JSON file of objects containing of image file locations and captions.
+	const imageLocationsResource = "imageList.json";  //JSON file of objects containing of image file locations and captions.
 	
 	
-	var images = new Array();                     //Array holding references to Image objects.
-		
-	var globalImageWidth = defaultImageWidth;     //Actual value for image width. Set to default initially
-	var globalImageHeight = defaultImageHeight;    //Actual value to use for image height. Set to default initially.
-	var interval = 0;                            //ID returned by setInterval() when a function is assigned.
-	var imageCounter = 0;   					//current image index in array "images".
+	var images = [];                                  //Array holding references to Image objects.
+		 
+	var globalImageWidth = defaultImageWidth;        //Actual value for image width. Set to default initially
+	var globalImageHeight = defaultImageHeight;      //Actual value to use for image height. Set to default initially.
+	var interval = 0;                                //ID returned by setInterval() when a function is assigned.
+	var imageCounter = 0;   					     //current image index in array "images".
 	
 	
-	var canvas;                                  //The canvas element for displaying slide show.
-	var context;                                  //2D graphics context for canvas.
-	var controls;                                //ControlElements for slideshow.
+	var canvas;                                     //The canvas element for displaying slide show.
+	var context;                                    //2D graphics context for canvas.
+	var controls;                                   //ControlElements for slideshow.
+	var captions;                                   //The captions element in which to display captions.
 	
 	
 	
@@ -345,13 +346,14 @@
 			fadeoutPreloader(1200);                                       //Fadeout the preloader cover for page in 1200ms.
 			setTimeout(function(){
 				canvas = document.getElementById("image-canvas"); 
+				captions = document.getElementById("imageCaption");
 				
 			   //Calc dynamic width and height of canvas if it has been set in css. Also sets context to the graphics context for this canvas.
 				resizeCanvas();                                                 
 				window.addEventListener("resize", resizeCanvas, false);        //Add event listener to resize canvas dyamically if window resizes.
 						
-				drawingFunction = function(slide) {                                 //Set current drawing function.
-				drawSlide( document.getElementById("imageCaption"), globalImageWidth, globalImageHeight, slide); 
+				drawingFunction = (slide) => {                                 //Set current drawing function.
+					drawSlide(captions , globalImageWidth, globalImageHeight, slide); 
 				};
 					
 				imageCounter = -1;           //First set image counter to position before first image in array imageData.
@@ -363,7 +365,7 @@
 				 resumeSlideShow() to continue the slideshow. Pass element with 
 				  id imageCaption to specify where to draw the captions. */
 				 controls.togglePlay();
-				 resumeSlideShow( document.getElementById("imageCaption"));
+				 resumeSlideShow( captions);
 			}, 600);
 		}
 		
@@ -513,7 +515,7 @@
 		 if (nextCounter < 0)                         //Then check if we are below index 0.
 			 nextCounter = images.length - 1;        //If so, set to last index to wrap around.
 		 
-		 drawingFunction(nextCounter);                       //Pass arg of false to drawing function to indicate backward.
+		 drawingFunction(nextCounter);               //Pass arg of false to drawing function to indicate backward.
 	  }
 	 
 	 /*Draws a random slide to the canvas using context. Uses Math.Random to determine an integer
@@ -613,13 +615,16 @@
 		let selectorElem = document.getElementById("effects-selector");  //DOM input button selector for different effects.
 		let captionElem = document.getElementById("imageCaption");      //DOM input button image caption.
 		let fullScreenElem = document.getElementById("full-screen");
-
 		
-		/*Create ControlElement elements and place them in ControlsContainer object. Specify 
+
+		setupTouchControls();                                           //Setup controls for touch (left and right swipe to navigate).
+
+			
+		
+		/*Button controls. Create ControlElement elements and place them in ControlsContainer object. Specify 
 		property for DOM element of each button and its state as args to 
 		ControlElement ctor for each control button. Also specify callback and event which fires it.*/
-		
-		var container = Object.create(ControlsManager.prototype.ControlsContainer, {
+	    var container = Object.create(ControlsManager.prototype.ControlsContainer, {
 			/*Button to play and pause slide show */
 			playButton : {
 				configurable: false,
@@ -674,7 +679,7 @@
 				configurable: false,
 				writable: true,
 				enumerable: true,
-				value: new ControlElement(fullScreenElem, true, fullScreenCallback, "click")
+				value: new ControlElement(fullScreenElem, true, fullScreenButtonCallback, "click")
 			},
 
 			/*The selector element for effects. Pass effectCallback() as callback for change event.
@@ -694,6 +699,61 @@
 		/*Set up controls for slideshow with the buttons in DOM for play, direction, and random toggle actions
 		  Also pass value indicating if slideshow is playing initally*/
 		controls = new ControlsManager(container);	
+	}
+
+
+	function setupTouchControls()
+	{
+		const precision = 15;                         //Movement must be 15 or more pixels to count as a swipe.
+		var startX = 0;
+		
+		/*Add event listeners for touch events for forward and backward swipe. 
+		 Detect the touch start and touch event events and determine if we have swipe
+		 from left to right or right to left.  */
+		 canvas.addEventListener("touchstart", (ev) => {
+			ev.preventDefault();
+
+			console.log("touchstart");
+			
+			startX = ev.changedTouches[0].clientX;           //The first touch point that became active with this touch start event.     
+		
+			console.log("start touch point X: " + startX);
+		});                                         
+
+
+		canvas.addEventListener("touchend", (ev) => {
+			ev.preventDefault();
+
+			console.log("touchend");
+
+			let endX = ev.changedTouches[0].clientX;         //Where touch point is removed (e.g. user removes finger).
+			let difference = endX - startX;
+						
+
+			/*Movement is to the right so move forward */
+			if (difference >= precision)
+			{
+				clearInterval(interval);
+				if (controls.isPlaying()) 
+					controls.togglePlay();                  //Mark slideshow as paused if it is currently playing. 
+
+				drawNextSlide();
+			}
+
+			/*Movement is to the left so move backwards*/
+			else if (difference <= precision * -1)
+			{
+				clearInterval(interval);
+				if (controls.isPlaying()) 
+					controls.togglePlay();     //Mark slideshow as paused if it is currently playing. 
+
+				drawPreviousSlide();
+			}
+
+			/*Otherwise, there was no horizontal movement that is >= precision, so do nothing. */
+
+		});  
+
 	}
 	
 	/*Produces a fading transition from the current image on the canvas to the next image 
@@ -783,7 +843,7 @@
 		
 		var offset = 0;                              //Current offset from canvas origin.              
 		var increment = 3;                           //Amount by which to increment offset on each redraw.
-		const speed = animationSpeed / increment;    //Calculate redraw rate.
+		let speed = animationSpeed / increment;    //Calculate redraw rate.
 		var forward = null;                          //Is movement forward or backwards?
 		//Determine if direction is forward or backward? imageCounter < nextCounter ?
 		( (imageCounter < nextCounter) ? (forward = true) : (forward = false) );
@@ -844,8 +904,9 @@
 	{
 		clearInterval(interval);
 		
-		var imgWidth = width;
-		var imgHeight = height;
+		let imgWidth = width;
+		let imgHeight = height;
+
 		//If no valid width is specified, use globalImageWidth
 		if (typeof(imgWidth) === 'undefined' || width < 0)
 			imgWidth = globalImageWidth;
@@ -853,20 +914,20 @@
 		if (typeof(imgHeight) === 'undefined' || height < 0)
 			imgHeight = globalImageHeight;
 				
-		var offset = 0;                              //Current offset from canvas origin.              
-		var increment = 3;                           //Amount by which to increment offset on each redraw.
-		const speed = animationSpeed / increment;       //Calculate redraw rate.
-		var forward = null;                           //Is movement forward or backwards?
+		let offset = 0;                              //Current offset from canvas origin.              
+		let increment = 3;                           //Amount by which to increment offset on each redraw.
+		let speed = animationSpeed / increment;      //Calculate redraw interval.
+		let forward = null;                           //Is movement forward or backwards?
 				
 		
-		var negImgHeight = imgHeight * -1;             //Negative value of imgHeight
-		const limit = imgHeight + increment;             //Y-axis Limit for where to stop drawing.
+		let negImgHeight = imgHeight * -1;             //Negative value of imgHeight
+		const limit = imgHeight + increment;           //Y-axis Limit for where to stop drawing.
 		
 		
 		//Determine if direction is forward or backward? imageCounter < nextCounter ?
-		( (imageCounter < nextCounter) ? (forward = true) : (forward = false) );
+		forward = (imageCounter < nextCounter);
 		
-		context.save();                 //Save original context state.
+		context.save();                                //Save original context state.
 				
 		//Call setInterval to begin animation. Call function every animationSpeed ms.
 		interval = setInterval(function() 
@@ -893,7 +954,7 @@
 				
 			/*The animation is halted if offset becomes > imgHeight since we now have (0, 0) in local
 			  coordinates for image 2 at the original canvas origin  */
-			if (offset >= limit - increment)
+			if (offset >= limit)
 			{
 				clearInterval(interval);
 				
@@ -958,7 +1019,7 @@
 	/*Set callback for next button. Does nothing if slideshow is not in sequential, non-random mode.
        Simply advances to next slide and stops automatic advance. 
 	   @param captionElem the DOM element in which to display image caption*/
-	function nextCallback( captionElem)
+	function nextCallback()
 	{
 		if (!(controls.isRandom()) )
 		{
@@ -972,7 +1033,7 @@
 	/*Very similar to callback for next button.
 	  Only difference is that drawPreviousSlide is called. 
 	@param captionElem the DOM element in which to display image caption*/
-	function previousCallback( captionElem)
+	function previousCallback()
 	{
 		if (!(controls.isRandom()) )
 		{
@@ -984,7 +1045,7 @@
 	}
 
 
-	function fullScreenCallback()
+	function fullScreenButtonCallback()
 	{
 		var browserFullScreen = null;
 
@@ -999,19 +1060,29 @@
 			
 			if (browserFullScreen !== null)
 			{
-				browserFullScreen.call(canvas);
+				let isPlaying =  controls.isPlaying();
+
+				if (isPlaying)
+				{
+					clearInterval(interval);                //Temporarily stop any auto play.
+				}
+				
+				browserFullScreen.call(canvas);             //Call the full screen method on the canvas element.
 				resizeCanvas(true);
 				
-				resumeSlideShow();
+				setTimeout(() => {
+					drawSlide(captions, globalImageWidth, globalImageHeight, imageCounter);
+				}, 500);                                   //Short delay before drawing next slide to avoid issues with drawing during resize.
+				
+				
+				resumeSlideShow(captions, controls.isReversed);
+				
 				
 			}
 		
 		}
 
-		controls.toggleFullScreen();
-
-		
-
+	
 
 	}
 
