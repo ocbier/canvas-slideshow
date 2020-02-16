@@ -1,0 +1,920 @@
+/************************************************************************************************ 
+ * Shared style sheet for TMA 1
+ *
+ *
+ ************************************************************************************************/
+ 
+ 
+ 
+/*Sets the base font-size for body in px. Also remove margin*/
+body
+{
+	font-size: 12px;
+	margin: 0em;
+	overflow: auto;
+	
+}
+
+/*Elements will not be displayed but will still take up normal space in document flow */
+.hidden
+{
+	visibility: hidden;
+}
+
+/*All anchors have magenta text */
+a
+{
+	color: magenta;
+}
+
+/*Bakground of a element becomes darkslategrey on hover */
+a:hover
+{
+	background: lightslategrey;
+	
+}
+
+
+/*Margins for section elements within the main wrapper */
+section
+{
+	margin: 5em 1em 1em 4em;
+}
+
+img
+{
+	width: 70%;
+	display: block;
+	margin: 1em;
+}
+
+
+h2
+{
+	font-variant: small-caps;
+	font-family: "Tahoma", sans-serif;
+	font-size: 2.3em;
+	margin: 1em;
+}
+
+
+/*General style for all main headings */
+h1
+{
+
+	font-size: 2.5em;
+	font-weight: bold;
+	margin: 1em 0.5em 0.5em 1em;
+	padding: 1em 0.5em 1em 0.5em;
+	font-variant: small-caps;
+}
+
+/*Style for div containing all assignment info*/
+div#assignmentInfo
+{
+	margin: 2em auto;
+	padding-left: 1em;
+	padding-bottom: 1em;
+	min-width: 320px;
+	width: 50%;
+	background: slategrey;
+}
+
+
+/*Sets font-size for detail elements, relative to inherited font-size.  */
+details
+{
+	font-size: 1.6em;
+	padding: 0.1em 0.5em 0.1em 0.5em;
+}
+
+/*Styling for summary element when detail is opened. Simply make border dark red. */
+details[open] > summary
+{
+	border: 0.1em solid darkred;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	
+	
+}
+
+
+/*Set the font weight, relative font-size, and family for summary elements */
+summary
+{
+	font: bold 1.15em tahoma, sans-serif;
+	margin: 0.4em;
+	padding: 0.2em;
+}
+
+
+
+/*General style for dl elements. Margin-top is reduced, as default will display an excessive margin.
+  Font weight, size, and family are set to override inherited values. */
+dl
+{
+	margin-top: -0.5em;
+	font: normal 1.1em 'calibri', sans-serif;
+	background: azure;
+	padding: 1em;
+	margin: 0.2em 0.6em 0.2em 0.5em;
+}
+
+
+/*Sets the margins for dt elements, as well as overriding font weight to make it bold */
+dt
+{
+	margin: 1.5em 0.5em 0em 0.2em;
+	font-weight: bold;
+	font-size: 0.8em;
+}
+
+/*Reduces margin for nested dl elements */
+dd dl
+{
+	margin: 0.1em;
+	padding: 0.1em;
+}
+/*Reduced margins for dt elements which are inside a nested dl */
+dd dl dt
+{
+	margin: 0.1em 0.5em 0em 0.1em;
+	font-size: 0.9em;
+	
+}
+
+/*Make sure nested elements' font-size within each dl scale correctly. 
+  Otherwise font-size will be set relative to inherited value from dl,
+  which means em unit will not give the desired value.  */
+dl *
+{
+	font-size: 1em;
+}
+
+/*Reduces padding compared to the inherited value from dl. Also sets margins */
+dd
+{
+	padding: 0.1em;
+	margin: 0.1em 0.1em 0.5em 0.5em;
+}
+
+ul
+{
+	margin: 1em;
+}
+
+/*Set font properties as well as padding, margin,
+  and specify how buttons should be handled within flex container. 
+  Also set background color and border properties for button so that
+  it has no border.*/
+button
+{
+	font: bold 1.2em "Helvetica", serif;
+	font-variant: small-caps;
+	text-align: center;
+	color: cornsilk;
+	padding: 0.4em;
+	margin: 0.2em;
+	
+	min-height: 2.5em;
+	
+	background-color: orange;
+	border-width: 0em;
+
+}
+
+/*Show shadow around button when user hovers */
+button:hover
+{
+	-webkit-box-shadow: 1px 1px 10px 1px grey;
+    box-shadow:	1px 1px 10px 1px grey;
+}
+	
+/* Styling for any flex container. Sets elements to row format, allowing wrapping.
+  Elements are justified with first and last at edge of container, and rest
+  of elements evenly spaced between */
+.flex
+{
+	display: -webkit-box;      /* Compatibility for iOS 6, Safari 3.1-6 */
+	display: -moz-box;         /* Compatibility for < Firefox 19 */
+	display: -ms-flexbox;      /* IE 10 Compatibility */
+	display: -webkit-flex;     /* Chrom compatibility */
+	
+	display: flex;
+	-webkit-flex-flow: row wrap;           /*Display flexbox elements in row but allow wrap if necessary */
+	flex-flow: row wrap;
+	
+    justify-content: space-between;
+}
+
+/*Display container items vertically in the flex container. All content is pushed to top, since
+  justify-content is set to flex-start. No wrapping occurs, since flex-flow is set to column nowrap. */
+.vertical-flex
+{
+	display: -webkit-box;      /* Compatibility for iOS 6, Safari 3.1-6 */
+	display: -moz-box;         /* Compatibility for < Firefox 19 */
+	display: -ms-flexbox;      /* IE 10 Compatibility */
+	display: -webkit-flex;     /* Chrome compatibility */
+	
+	display: flex;                     /*Display as flex container which is inline with other content. Similar to inline-block level element. */
+	-webkit-flex-flow: column nowrap;    /*Display flexbox elements in column and don't allow wrap */
+	flex-flow: column nowrap;
+	
+    justify-content: flex-start;       /*IF there is extra space, elements slide to top of container with blank space at bottom. */
+	
+}
+
+
+/*Similar to rules for .vertical-flex, except that container is displayed inline. Behaviour of container is similar to that
+  of an element with display:inline-block, although it is still a flex container */
+.vertical-flex-inline
+{
+	display: -webkit-inline-box;      /* Compatibility for iOS 6, Safari 3.1-6 */
+	display: -moz-inline-box;         /* Compatibility for < Firefox 19 */
+	display: -ms-inline-flexbox;      /* IE 10 Compatibility */
+	display: -webkit-inline-flex;     /* Chrome compatibility */
+	
+	display: inline-flex;                     /*Display as flex container which is inline with other content. Similar to inline-block level element. */
+	-webkit-flex-flow: column nowrap;    /*Display flexbox elements in column and don't allow wrap */
+	flex-flow: column nowrap;
+	
+    justify-content: flex-start;       /*IF there is extra space, elements slide to top of container with blank space at bottom. */
+}
+
+
+
+/*Sets any matching element to make it invisible and remove it from page flow */
+.display-false
+{
+	display: none;
+}
+
+/*Set element's display property to default */
+.display-true
+{
+	display: inherit;
+}
+
+
+/*General styling for header and footer. Add padding to top and bottom and set 
+  width to 100% of parent */
+header, footer
+{
+	padding: 3em 0 2em 0;
+	width: 100%;
+}
+
+.display-inline
+{
+	display: inline
+}
+
+
+
+
+
+
+
+
+
+/*******************************************************************
+  * Styles specifically for part1: resume.xsl
+  *
+ *******************************************************************/
+
+
+
+/*Rule for banner at top of resume containing name and contact info.
+  Set background to slategrey. This will be applied in addition to regular rules
+  for header elements.*/
+  
+ 
+header#resume-banner
+{
+	background: slategrey;
+}
+
+/*Set the left and right margins of h1 and address elements within the resume banner */
+#resume-banner h1, #resume-banner address
+{
+	margin: 0 2% 0 2%;
+	color: cornsilk;
+}
+
+/* Sets the properties for the wrapper around the contents of the resume.
+   Specifies margins, padding, font and border around this element. */
+#resume-wrapper
+{
+	margin: 1em 33% 1em 2em;          /*1 em margin on top and bottom, 33% margin on right, and 2 em margin on left. */
+	padding: 1em;
+	font: normal 1.4em "Noto Serif", serif; /*Use the noto serif font from Google Fonts. */
+	border: solid black 1px;
+}
+
+
+
+
+/*Font size in detail elements should be the same as that defined for #resume-wrapper */
+#resume-wrapper section details
+{
+	font-size: 1em;
+}
+
+/*Reduce the margin between details summary and the first p element within each details element */
+#resume-wrapper section details p:first-of-type
+{
+	font-weight: bold;
+	margin-top: 0.2em;
+}
+
+/*Slightly larger font-size for summary within each details element*/
+#resume-wrapper section details summary
+{
+	font-size: 1.1em;
+}
+
+
+/*************************************************************************
+  Specific stylaing for part 2: Tutorials
+  
+ *************************************************************************/
+/*Font-family for h1 elements is set to use Source Code Pro font in white */
+
+
+#template h1
+{
+	color: white;
+	font-family: "Source Code Pro", monospace;
+	font-size: 3em;
+}
+
+#template h2
+{
+	font-variant: small-caps;
+	font-family: "Tahoma", sans-serif;
+	font-size: 2.1em;
+	margin: 1em 1em 1em 0em;
+}
+
+#template h3
+{
+	font-variant: small-caps;
+	font-size: 2em;
+	font-family: "Inconsolata", monospace;     /*Use Inconsolata, which is a type of monspace font */
+}
+
+#template h4
+{
+	font-size: 1.6em;
+}
+
+
+/*Banner has vertical downward linear gradient from #2A2727 to #fffff7 which is charcoal color to near white. */
+#template header#tutorial-banner
+{
+	background: -moz-linear-gradient(180deg, #2A2727, #ffffff);
+	background: -o-linear-gradient(180deg, #2A2727, #ffffff);
+	background: -webkit-linear-gradient(180deg, #2A2727, #ffffff);
+	background: linear-gradient(180deg, #2A2727, #fffff0);
+	padding: 0.01em;                      /*Reduced padding */
+}
+
+#template footer
+{
+	background: -moz-linear-gradient(0deg, darkgrey, white);
+	background: -o-linear-gradient(0deg, darkgrey, white);
+	background: -webkit-linear-gradient(0deg, darkgrey, white);
+	background: linear-gradient(0deg, darkgrey, white);
+}
+
+/*Wrapper for menu and and content of template. These are column flex containers displayed inline with each other. So they can be wrapped in this element
+  so top and bottom margins can be controlled for both elements */
+#template #wrapper
+{
+	margin: 0em 2em 2em 0em;
+	width: 100%;
+}
+
+
+
+/*Flex container for menu. Set to 10 of parent width, with 240px width at minimum. Specifies font for all children. 
+  Display container items vertically in the flex container. */
+#template #wrapper #menu-container
+{
+
+	width: 10%;
+	min-width: 240px;
+	font-size: 100%;                           /*Font size is 100% of parent's font size. */
+	font-family: "Inconsolata", monospace;     /*Use Inconsolata, which is a type of monspace font */
+	-webkit-box-shadow: 1em 0px 1em -0.1em lightgrey; /*Shadow is translated to right, so that it acts as a natural boundary between menu and rest of content. */
+	box-shadow: 1em 0px 1em -0.1em lightgrey; 
+		
+}
+
+/*h2 elements which act as labels for submenus*/
+#template #wrapper #menu-container h2.submenu-title
+{
+	min-height: 2em;                   /*Ensure height of at least 2.5em. */
+	padding: 0.5em;
+	padding-bottom: 0em;
+	margin-top: 1em;
+	margin-bottom: -0.5em;
+	border-top: 2px outset black;
+	text-align: left;
+	
+	webkit-flex: 0 0 2em;
+	flex: 0 0 2em;                       /*label item does not grow or shrink and uses computed height value */
+	
+	font-family: inherit;
+	font-size: 2em;
+	font-weight: bold;
+	font-variant: small-caps;
+}
+
+
+/*First label should have 0 top margin */
+#template #wrapper #menu-container label:first-of-type
+{
+	margin-top: 0em;
+}
+
+
+
+/*Nav submenus within the main menu. Note that these elements may be flex containers themselves.*/
+#template #wrapper #menu-container nav
+{
+	margin: 0em;
+	webkit-flex: 1 1 auto;
+	flex: 1 1 auto;                      /*Use computed height as basis but grow and shrink equally with other submenus */
+	font-size: 100%; 
+	
+}
+
+/*Wrappers for menu items, Eg. anchor elements. Elements grow and shrink equally, starting with basis height of 2em.
+  However, height will never be < 1.5em*/
+#template #wrapper #menu-container .menu-item
+{
+	font-size: 100%;
+	min-height: 1.5em;                                /*Height of at least 2.5em. */
+	border: none;
+	padding: 0.65em;
+	
+	text-align: left;
+	webkit-flex: 1 1 2em;
+	flex: 1 1 2em;
+	
+	padding-left: 2em;
+	
+	margin: 0em;
+}
+
+/*Increase top margin for first menu item */
+#template #wrapper #menu-container .menu-item:first-child
+{
+	margin-top: 1em;
+}
+
+/*a elements which are within .menu-item wrappers which are descendants of #menu-container */
+#template #wrapper #menu-container .menu-item a
+{
+	text-decoration: none;
+	color: black;
+	font-size: 1.55em;
+	font-weight: normal;
+	
+}
+
+
+/*Display limegreen border under text on hover or active for a elements in a any .menu-item container. The default
+outline for active anchors is removed. */
+#template #wrapper #menu-container .menu-item a:hover, #template #menu-container .menu-item a:active
+{
+	border-bottom: 0.12em solid limegreen;
+	background: white;
+	outline: none;
+}
+
+/*Custom content within template. Occupies 50% of width of parent with 15% rigt margin, 5% bottom margin and 5% left margin */
+#template #wrapper #content 
+{
+	width: 55%;
+	min-width: 320px;
+	margin: 0% 10% 5% 10%;
+	
+}
+
+ /* Items within #content flex container.
+  Elements do not grow to fill available space beyound basis. However, they do shrink equally. 
+ Flex-basis is set to auto == original height  */
+#template #wrapper #content > *
+{
+	-webkit-flex: 0 1 auto;
+	flex: 0 1 auto;           
+	
+}
+
+
+#template p
+{
+	font: normal 1.55em "Noto Serif", serif;
+	margin: 1.2em 0.4em 1em 0.4em;
+	
+}
+
+/*Smaller margins for p elements in forms */
+#template form p
+{
+	margin: 0.3em;
+}
+
+/*Styling for pre elements used to hold source code. */
+#template pre
+{
+	overflow: auto;
+	background: darkslategrey;
+	border: 1px outset grey;
+}
+
+/*Display code as a block-level element so that margins can be reduced .
+Also set font to appropriate monospace font in green.*/
+#template pre > code
+{
+	display: block;
+	margin-left: -25%;
+	font-family: "Source Code Pro", monospace;
+	font-size: 1.2em;
+	color: limegreen;
+	
+}
+
+#template figcaption p
+{
+	font-weight: bold;
+	font-size: 1.2em;
+	margin-top: 0em;
+}
+
+
+#template .result
+{
+	font-weight: bold;
+	margin: 1em 1em 1em 3em;
+	text-align: center;
+	font-weight: bold;
+	width: 50%;
+	min-width: 320px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+#template #outcome
+{
+	font-weight: bold;
+	font-size: 1.3em;
+	margin-top: 2em;
+}
+
+/*Set margins for quiz questions */
+#template .quiz-question
+{
+	margin: 3em;
+}
+
+/*FIrst p element is the question, so it should be bold */
+#template .quiz-question p:first-of-type
+{
+	font-weight: bold;
+}
+
+/*Heading for each question is in small-caps */
+#template .quiz-question h3
+{
+	font-variant: small-caps;
+}
+
+/*Incorrect result on marking gets a red border */
+#template .result.incorrect
+{
+	border: 2px solid red;
+	
+}
+
+/*Correct result on marking gets a green border */
+#template .result.correct
+{
+	border: 2px solid green;
+	
+}
+
+
+
+/************************************************************************
+  Styling specific for part 3: slideshow.
+*************************************************************************/
+
+/*Style for body of slide show page */
+#slideshow-body
+{
+	background: linear-gradient(0deg, white, black);
+	background-repeat: no-repeat;
+		
+}
+
+
+/*Wrapper for slideshow and controls */
+#slideshow
+{
+	width: 50%;
+	min-width: 320px;
+	height: 50%;
+	margin: 2em auto;
+}
+
+/*Wrapper for slideshow and caption should take up 100% of parent width. Also
+remove any margins. */
+#slideshow > figure
+{
+	width: 100%;
+	margin: 0em;
+}
+/*Set width of canvas to 100% of parent. Note that this will scale canvas rather than
+  set the actual coordinate range. To solve this, computed style for width must be calculated
+  and applied using JS.*/
+#slideshow canvas
+{
+	width: 100%;
+	border: 1px solid black;
+
+}
+
+#slideshow #controls
+{
+	width: 100%;
+	margin: 0.8em;
+	
+}
+
+/*Formatting for div containing selection element in controls
+ Determines how element will behave in flex container, set margin,
+ and text properties. Flex growth is larger than other elements,
+ while shrink is only 0.5. Starts with base of 2.5em*/
+#slideshow #controls #effects-div
+{
+	-webkit-flex: 2 0.5 2.5em;
+	flex: 2 0.5 2.5em;              /*Flex growth is set to factor of 2 for labels, and shrink to 0.5, and base of 2.5em */
+	
+	margin: 0.8em;
+	color: black;
+	font: bold 1.3em 'Helvetica', sans-serif;
+}
+
+/* Slideshow buttons. Specific rule which sets properties for behaviour
+   within flex container. Flex growth to fill available space is only factor of 0.65
+   while shrink factor is at 1.*/
+#slideshow #controls button
+{
+	-webkit-flex: 0.65 1 1em;  
+	flex: 0.65 1 1em;              /*Flex growth and flex shrink are both set to factor of 1 for all buttons, and base of 2.5em */
+	
+}
+
+
+/*Change button text color to darkred if action associated with button is active */
+#slideshow #controls button.active 
+{
+	color: darkred;
+}
+
+/*Opacity of disabled button is lower than in other button states. Also, no shadow effect on hover*/
+#slideshow #controls button.disabled, #slideshow #controls button.disabled:hover
+{
+	opacity: 0.4;
+	-webkit-box-shadow: none;
+    box-shadow:	none;
+}
+
+
+
+
+/*Captions for images in slideshow*/
+#slideshow #imageCaption
+{
+	color: darkslategrey;
+	margin: 0.1em 0.5em 0.2em 0.5em;
+	font: bold 1.2em "Noto Serif", serif;
+}
+
+
+
+/* Preloader */
+#preloader {
+	
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+	
+	background-color:rgb(150, 150, 150, 0.9); /* Background color of preload overlay set to light-grey color*/
+	z-index:99; /* makes sure overlay stays on top */
+	/*Ensure it is fixed to top left of browser window */
+	position: fixed;
+	left: 0;
+	top: 0;
+}
+
+
+/* Loading with id statuicon which will be child of #preloader*/
+#preloader #preloader-state {
+	
+	width:200px;
+	height:200px;
+	margin-left: -150px;
+	margin-top: -150px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-image:url("loading_indicator.gif"); /* Loading animation set here which is a spinner gif */
+	position:absolute;
+	left:50%; /* centers the loading animation horizontally on the screen */
+	top:50%; /* centers the loading animation vertically on the screen */
+	
+
+}
+
+
+/**************************************************************************
+ Specific styling for part 4
+ 
+ **************************************************************************/
+ 
+/*Wrapper for all elements in the utilities page. Set width to 75% and center it. However,
+  also specify minimum width of 480px. */
+#utilities-wrapper
+{
+	width: 60%;
+	min-width: 480px;
+	margin: 2em auto;
+
+}
+
+/*Banner for page. Simple design with clean white background and shadow to show
+  bottom division. */
+#utilities-banner
+{
+	width: 80%;
+	min-width: 480px;
+	font-family: "Helvetica", sans-serif;
+	padding: 0.1em;
+	background: white;
+	padding-left: 2em;
+	margin-left: 4em;
+	-webkit-box-shadow: 0 20px 4px -15px;
+	box-shadow: 0 20px 4px -16px; 
+}
+
+/*Reduce padding for children of the utilities banner */
+#utilities-banner *
+{
+	padding: 0.1em;
+}
+
+/*Set top margin of the section with selection button to 15% of parent height.
+ Also set this element as a flex container with appropriate element justification. */
+#selection-area
+{
+	margin: 10% 1em 1em 1em;
+	width: 100%;
+}
+
+/*Width of the menu to select utilities. Also ensure that items in flex container are
+stretch to fill height along cross axes and justified to the center of the main axis. */
+#utilities-menu
+{
+	width: 90%;
+	
+	-webkit-align-items: stretch;
+	align-items: stretch;
+	
+	-webikit-justify-content: center;
+	justify-content: center;
+	
+}
+
+/*Styling for button in the utlilites menu. Clean appearance with white background, rounded corners on border.
+Minimum height and margins, as well as font are also specified. Behaviour within the flex
+container for growth, shrink, and base value are also set so that buttons grow
+and shrink equally with factor of 1*/
+#utilities-menu button
+{
+	color: black;
+	padding: 0.4em;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	border: 2px solid grey;
+	background-color: white;
+	
+	text-align: center;
+	font: bold 1.2em "tahoma";
+	margin: 1em;
+	min-height: 4em;
+	max-width: 25%;
+
+	
+	-webkit-flex: 1 1 2.5em;
+	flex: 1 1 2.5em;
+		
+}
+
+/*Show shadow when user hovers over button */
+#utilities-menu button:hover
+{
+   -webkit-box-shadow: 1px 1px 10px 2px grey;
+    box-shadow:	1px 1px 10px 2px grey;
+}
+
+/*General style for element displaying the current utility */
+#current-utility 
+{
+	margin: 10% auto;
+	width: 75%;
+	
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	
+	border: none;
+	background: silver;
+	padding: 1em;
+	
+	font-size: 12px
+}
+
+
+#current-utility > #app-interface
+{
+	margin: 0.2em 0.2em 0.2em 1em;
+}
+
+
+/*Prevent label and input element (Eg. select or input) from being split across lines */
+#current-utility > #app-interface .app-input
+{
+	margin: 0.5em 0.2em 0.5em 1em;
+	display: inline-block;
+	font: normal 1.3em "Calibri", sans-serif;
+}
+
+
+/*Styling for any labels in any app interface */
+#current-utility > #app-interface label
+{
+	font-weight: bold;
+	margin: 0.5em 0.1em 0.1em 0.1em;
+}
+
+
+/*Styling for output results in an app interface */
+#current-utility > #app-interface output
+{
+	margin: 1em 1em 1em 3em;
+	display: block;
+	font: bold 1.4em "Noto-serif", sans-serif;
+	color: white;
+
+}
+
+#current-utility > #app-interface p
+{
+	margin: 1.4em 0.5em 0.5em 1em;
+	font: normal 1.3em "Noto-serif", sans-serif;
+}
+
+
+/*Margin and font for forms */
+#current-utility > #app-interface form
+{
+	margin: 1em;
+	font: normal 1.3em "Calibri", sans-serif;
+}
+
+/*Labels and inputs in forms must be displayed as block elements */
+#current-utility > #app-interface form > label, #app-interface form > input
+{
+	display: block;
+}
+
+/*Margins for input elements in forms */
+#current-utility > #app-interface form input
+{
+	margin: 0.2em 0.2em 1em 1.5em;
+}
+
+/*Make font size larger for timer and use */
+#current-utility > #app-interface output#timer-display
+{
+	font-size: 2.5em;
+	font-family: "monospace"
+}
+
+
+
+	
+
