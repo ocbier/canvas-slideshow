@@ -1082,6 +1082,8 @@
 		
 		}
 
+		controls.toggleFullScreen();                       //Indicate that fullscreen is available again.
+
 	
 
 	}
