@@ -582,8 +582,7 @@
 			globalImageWidth = window.innerWidth;
 			globalImageHeight = window.innerHeight;
 
-			console.log(globalImageWidth);
-		console.log(globalImageHeight);
+	
 		}
 
 		
@@ -619,7 +618,9 @@
 
 		setupTouchControls();                                           //Setup controls for touch (left and right swipe to navigate).
 
-			
+		setupKeyboardControls();
+
+		setupViewChangeHandling();
 		
 		/*Button controls. Create ControlElement elements and place them in ControlsContainer object. Specify 
 		property for DOM element of each button and its state as args to 
@@ -712,12 +713,9 @@
 		 from left to right or right to left.  */
 		 canvas.addEventListener("touchstart", (ev) => {
 			ev.preventDefault();
-
-			console.log("touchstart");
-			
+						
 			startX = ev.changedTouches[0].clientX;           //The first touch point that became active with this touch start event.     
 		
-			console.log("start touch point X: " + startX);
 		});                                         
 
 
@@ -755,6 +753,36 @@
 		});  
 
 	}
+
+	function setupKeyboardControls()
+	{
+		/*Handle left and right arrow presses to advance slideshow*/
+		document.addEventListener("keydown", (ev) => {
+		
+			if (ev.key === "ArrowLeft")
+			{
+				clearInterval(interval);
+				if (controls.isPlaying()) 
+					controls.togglePlay();     //Mark slideshow as paused if it is currently playing. 
+
+				drawPreviousSlide();
+			}
+
+			else if (ev.key === "ArrowRight")
+			{
+				clearInterval(interval);
+				if (controls.isPlaying()) 
+					controls.togglePlay();     //Mark slideshow as paused if it is currently playing. 
+
+				drawNextSlide();
+			}
+		});
+
+
+	}
+
+
+
 	
 	/*Produces a fading transition from the current image on the canvas to the next image 
 	@param captionElem DOM element in which to display image captions
@@ -1049,11 +1077,7 @@
 	{
 		var browserFullScreen = null;
 
-		controls.toggleFullScreen();
-
-		/*Go full screen */
-		if (controls.isFullScreen())
-		{
+			
 			/*Determine which function the browser supports */
 			browserFullScreen = canvas.requestFullscreen || 
 			canvas.webkitRequestFullScreen || canvas.mozRequestFullScreen || canvas.msRequestFullscreen || null;
@@ -1068,25 +1092,45 @@
 				}
 				
 				browserFullScreen.call(canvas);             //Call the full screen method on the canvas element.
-				resizeCanvas(true);
+				
+			}
+		
+	
+	
+	}
+
+	/**
+	 * Determine when we need to resize and redraw canvas. This includes handlers for full screen mode toggle
+	 *  and for orientation change.
+	 */
+	function setupViewChangeHandling()
+	{
+		let viewChange = ()=> {
+			   
+				resizeCanvas(controls.isFullScreen);
 				
 				setTimeout(() => {
 					drawSlide(captions, globalImageWidth, globalImageHeight, imageCounter);
 				}, 500);                                   //Short delay before drawing next slide to avoid issues with drawing during resize.
 				
-				
-				resumeSlideShow(captions, controls.isReversed);
-				
-				
-			}
-		
-		}
+				if (controls.isPlaying())
+				{
+					resumeSlideShow(captions, controls.isReversed);
+				}
+		};
 
-		controls.toggleFullScreen();                       //Indicate that fullscreen is available again.
 
-	
+		canvas.addEventListener("fullscreenchange", () => {
+			controls.toggleFullScreen();                //Change fullscreen button state.
+			viewChange();
+		});
+
+
+		window.addEventListener("orientationchange", viewChange);
+
 
 	}
+
 
 
 
@@ -1104,7 +1148,7 @@
 		if (option === "None")
 		{
 			drawingFunction = function(slide) {
-				drawSlide( captionElem, width, height, slide);
+				drawSlide( captionElem, globalImageWidth, globalImageHeight, slide);
 			};
 		}	
 		
