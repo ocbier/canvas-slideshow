@@ -1,0 +1,31 @@
+{
+  "name": "canvasslideshow",
+  "version": "1.0.0",
+  "description": "Canvas slideshow written in TypeScript",
+  "main": "Index.js",
+  "scripts": {
+    "start": "tsc && webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OCBier/canvas-slideshow.git"
+  },
+  "keywords": [
+    "canvas",
+    "typescript"
+  ],
+  "author": "Oloff Biermann",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OCBier/canvas-slideshow/issues"
+  },
+  "homepage": "https://github.com/OCBier/canvas-slideshow#readme",
+  "dependencies": {
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
+  },
+  "devDependencies": {
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0"
+  }
+}
