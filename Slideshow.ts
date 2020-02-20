@@ -106,7 +106,7 @@ class Slideshow
 			this.resizeCanvas();                                                 
 												
 			this.drawingFunction = (slide : any) => {                                 //Set current drawing function.
-				this.drawSlide(this.captions , this.globalImageWidth, this.globalImageHeight, slide); 
+				this.drawSlide(this.captions, slide); 
 			};
 							
 			this.imageCounter = -1;           //First set image counter to position before first image in array imageData.
@@ -368,9 +368,16 @@ class Slideshow
 	   @param width The width of image to draw
 	   @param height Height of image to draw
 	   @param slide the position in image data array for image to draw  */
-	 private drawSlide(captionElement: HTMLElement, width : number, height : number, slide : number)
+	 private drawSlide(captionElement: HTMLElement, slide : number, width : number = -1, height : number = -1 )
 	 {
+		 
 		this.imageCounter = slide;                                                     //Assign value of slide to imageCounter.
+		
+		if (width < 0)
+			width = this.globalImageWidth;
+
+		if (height < 0)
+			height = this.globalImageHeight;
 		
 		try{
 				 
@@ -410,6 +417,9 @@ class Slideshow
 		{
 			this.globalImageWidth = window.innerWidth;
 			this.globalImageHeight = window.innerHeight;
+
+			console.log("w:" +this.globalImageWidth);
+			console.log("h"  + this.globalImageHeight);
 		}
 
 		
@@ -635,7 +645,7 @@ class Slideshow
 			//If the global alpha is > 0.1, decrease by 0.1, then redraw image currently at imageCounter.
 			if (this.context.globalAlpha >= 0.1)
 			{
-				this.drawSlide( captionElem, imgWidth, imgHeight, this.imageCounter);
+				this.drawSlide( captionElem, this.imageCounter, imgWidth, imgHeight);
 				this.context.globalAlpha -= Slideshow.fadeStep;
 			}
 					
@@ -651,7 +661,7 @@ class Slideshow
 					//Draw new image and increment the global alpha value to increase opacity.
 					if (this.context.globalAlpha < 1.0)
 					{
-						this.drawSlide( captionElem, imgWidth, imgHeight, this.imageCounter);
+						this.drawSlide( captionElem, this.imageCounter, imgWidth, imgHeight);
 						this.context.globalAlpha += Slideshow.fadeStep;
 						
 					}
@@ -914,9 +924,17 @@ class Slideshow
 				browserFullScreen.call(this.canvas);             //Call the full screen method on the canvas element.
 				
 			}
-		
-	
-	
+
+			
+		if (this.controls.isPlaying())
+		{
+			clearInterval(this.interval);                      //Temporarily stop any auto play.
+		}
+
+		this.controls.toggleFullScreen();                      //Change fullscreen button state.
+		this.viewChange();
+			
+		this.controls.toggleFullScreen();
 	}
 
 	/**
@@ -925,36 +943,32 @@ class Slideshow
 	 */
 	private setupViewChangeHandling()
 	{
-		let viewChange = ()=> {
-			   
-				this.resizeCanvas(this.controls.isFullScreen());
-				
-				setTimeout(() => {
-					this.drawSlide(this.captions, this.globalImageWidth, this.globalImageHeight, this.imageCounter);
-				}, 500);                                   //Short delay before drawing next slide to avoid issues with drawing during resize.
-				
-				if (this.controls.isPlaying())
-				{
-					this.resumeSlideShow();
-				}
-		};
+		
+		window.addEventListener("orientationchange", () =>{
+			this.viewChange();
+		} );    //On orientation change, resize canvas dynamically.
+
+		window.addEventListener("resize", () =>{
+			this.viewChange();
+		} );               //Resize canvas dyamically if window resizes.
 
 
-		this.canvas.addEventListener("fullscreenchange", () => {
-		if (this.controls.isPlaying())
-		{
-			clearInterval(this.interval);                //Temporarily stop any auto play.
-		}
-			this.controls.toggleFullScreen();               //Change fullscreen button state.
-			viewChange();
-		});
+	}
 
 
-		window.addEventListener("orientationchange", viewChange);    //On orientation change, resize canvas dynamically.
-
-		window.addEventListener("resize", viewChange);               //Resize canvas dyamically if window resizes.
-
-
+	private viewChange()
+	{
+				   
+			this.resizeCanvas(this.controls.isFullScreen());
+			
+			setTimeout(() => {
+				this.drawSlide(this.captions, this.imageCounter);
+			}, 500);                                   //Short delay before drawing next slide to avoid issues with drawing during resize.
+			
+			if (this.controls.isPlaying())
+			{
+				this.resumeSlideShow();
+			}
 	}
 
 
@@ -974,7 +988,7 @@ class Slideshow
 		if (option === "None")
 		{
 			this.drawingFunction = (slide: any)=> {
-				this.drawSlide( captionElem, this.globalImageWidth, this.globalImageHeight, slide);
+				this.drawSlide( captionElem, slide);
 			};
 		}	
 		

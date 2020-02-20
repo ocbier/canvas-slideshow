@@ -53,7 +53,7 @@ class Slideshow {
                 //Calc dynamic width and height of canvas if it has been set in css. Also sets context to the graphics context for this canvas.
                 this.resizeCanvas();
                 this.drawingFunction = (slide) => {
-                    this.drawSlide(this.captions, this.globalImageWidth, this.globalImageHeight, slide);
+                    this.drawSlide(this.captions, slide);
                 };
                 this.imageCounter = -1; //First set image counter to position before first image in array imageData.
                 this.setupControls(); //Assign callbacks to buttons. Appropriate graphics context specified in arg context.
@@ -224,8 +224,12 @@ class Slideshow {
       @param width The width of image to draw
       @param height Height of image to draw
       @param slide the position in image data array for image to draw  */
-    drawSlide(captionElement, width, height, slide) {
+    drawSlide(captionElement, slide, width = -1, height = -1) {
         this.imageCounter = slide; //Assign value of slide to imageCounter.
+        if (width < 0)
+            width = this.globalImageWidth;
+        if (height < 0)
+            height = this.globalImageHeight;
         try {
             this.context.clearRect(0, 0, width, height); //Clear the canvas image area before drawing.
             console.log("Drawing " + this.images[this.imageCounter].src);
@@ -248,6 +252,8 @@ class Slideshow {
         if (computedWidth && computedHeight && isFullscreen === true) {
             this.globalImageWidth = window.innerWidth;
             this.globalImageHeight = window.innerHeight;
+            console.log("w:" + this.globalImageWidth);
+            console.log("h" + this.globalImageHeight);
         }
         //If style has been specified, change width and height of canvas and images from default.
         else if (computedWidth) {
@@ -415,7 +421,7 @@ class Slideshow {
         this.interval = setInterval(() => {
             //If the global alpha is > 0.1, decrease by 0.1, then redraw image currently at imageCounter.
             if (this.context.globalAlpha >= 0.1) {
-                this.drawSlide(captionElem, imgWidth, imgHeight, this.imageCounter);
+                this.drawSlide(captionElem, this.imageCounter, imgWidth, imgHeight);
                 this.context.globalAlpha -= Slideshow.fadeStep;
             }
             /*Otherwise clear the interval, draw the next slide and assign a different function to
@@ -426,7 +432,7 @@ class Slideshow {
                 this.interval = setInterval(() => {
                     //Draw new image and increment the global alpha value to increase opacity.
                     if (this.context.globalAlpha < 1.0) {
-                        this.drawSlide(captionElem, imgWidth, imgHeight, this.imageCounter);
+                        this.drawSlide(captionElem, this.imageCounter, imgWidth, imgHeight);
                         this.context.globalAlpha += Slideshow.fadeStep;
                     }
                     /*When the global alpha value reaches 1.0, call clearInterval to stop
@@ -609,30 +615,33 @@ class Slideshow {
         if (browserFullScreen !== null) {
             browserFullScreen.call(this.canvas); //Call the full screen method on the canvas element.
         }
+        if (this.controls.isPlaying()) {
+            clearInterval(this.interval); //Temporarily stop any auto play.
+        }
+        this.controls.toggleFullScreen(); //Change fullscreen button state.
+        this.viewChange();
+        this.controls.toggleFullScreen();
     }
     /**
      * Determine when we need to resize and redraw canvas. This includes handlers for full screen mode toggle
      *  and for orientation change.
      */
     setupViewChangeHandling() {
-        let viewChange = () => {
-            this.resizeCanvas(this.controls.isFullScreen());
-            setTimeout(() => {
-                this.drawSlide(this.captions, this.globalImageWidth, this.globalImageHeight, this.imageCounter);
-            }, 500); //Short delay before drawing next slide to avoid issues with drawing during resize.
-            if (this.controls.isPlaying()) {
-                this.resumeSlideShow();
-            }
-        };
-        this.canvas.addEventListener("fullscreenchange", () => {
-            if (this.controls.isPlaying()) {
-                clearInterval(this.interval); //Temporarily stop any auto play.
-            }
-            this.controls.toggleFullScreen(); //Change fullscreen button state.
-            viewChange();
-        });
-        window.addEventListener("orientationchange", viewChange); //On orientation change, resize canvas dynamically.
-        window.addEventListener("resize", viewChange); //Resize canvas dyamically if window resizes.
+        window.addEventListener("orientationchange", () => {
+            this.viewChange();
+        }); //On orientation change, resize canvas dynamically.
+        window.addEventListener("resize", () => {
+            this.viewChange();
+        }); //Resize canvas dyamically if window resizes.
+    }
+    viewChange() {
+        this.resizeCanvas(this.controls.isFullScreen());
+        setTimeout(() => {
+            this.drawSlide(this.captions, this.imageCounter);
+        }, 500); //Short delay before drawing next slide to avoid issues with drawing during resize.
+        if (this.controls.isPlaying()) {
+            this.resumeSlideShow();
+        }
     }
     /*Callback for the effects select element. Assigns appropriate function using setInterval
       in order to achieve effect. If the "None" option is selected, effects are cleared by
@@ -644,7 +653,7 @@ class Slideshow {
         //Clear the effects by simply setting drawingFunction to drawSlide();
         if (option === "None") {
             this.drawingFunction = (slide) => {
-                this.drawSlide(captionElem, this.globalImageWidth, this.globalImageHeight, slide);
+                this.drawSlide(captionElem, slide);
             };
         }
         /*Fade option is selected so use function which
